@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Global Calendar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#007bff"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-hijri/1.2.2/moment-hijri.js"></script>
+</head>
+<body>
+    <div id="app-container">
+        <header class="app-header">
+            <h1 id="app-title">Global Calendar</h1>
+
+            <div class="controls-row main-controls">
+                <div class="year-navigation">
+                    <button id="prev-year" aria-label="Previous Year">&lt;</button>
+                    <span id="current-year-display">2024</span>
+                    <button id="next-year" aria-label="Next Year">&gt;</button>
+                </div>
+                <div class="selector-group">
+                    <label for="language-selector" class="visually-hidden" id="lang-selector-label">Language</label>
+                    <select id="language-selector" aria-labelledby="lang-selector-label">
+                        <option value="en">English</option>
+                        <option value="bn">বাংলা (Bangla)</option>
+                        <option value="ar">العربية (Arabic)</option>
+                        <option value="hi">हिंदी (Hindi)</option>
+                        <option value="ur">اردو (Urdu)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                        <option value="ml">മലയാളം (Malayalam)</option>
+                        <option value="ja">日本語 (Japanese)</option>
+                        <option value="ru">Русский (Russian)</option>
+                        <option value="zh">中文 (Chinese)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="controls-row secondary-controls">
+                <div class="selector-group">
+                    <label for="theme-selector" class="visually-hidden" id="theme-selector-label">Theme</label>
+                    <select id="theme-selector" aria-labelledby="theme-selector-label">
+                        <option value="light" id="theme-light-option">Light</option>
+                        <option value="dark" id="theme-dark-option">Dark</option>
+                        <option value="glassmorphic" id="theme-glass-option">Glassmorphic</option>
+                        <option value="neon" id="theme-neon-option">Gradient Neon</option>
+                    </select>
+                </div>
+                <div class="selector-group">
+                     <label for="country-selector" class="visually-hidden" id="country-selector-label">Country</label>
+                     <select id="country-selector" aria-labelledby="country-selector-label">
+                        <option value="none" id="country-none-option">Select Country</option>
+                        <option value="BD" id="country-bd-option">Bangladesh</option>
+                        <option value="IN" id="country-in-option">India</option>
+                        <option value="PK" id="country-pk-option">Pakistan</option>
+                        <option value="SA" id="country-sa-option">Saudi Arabia</option>
+                        <option value="US" id="country-us-option">USA</option>
+                     </select>
+                </div>
+            </div>
+
+            <div class="controls-row manual-date-entry" id="manual-date-container">
+                <div class="manual-date-input-group">
+                    <label for="manual-year-input" id="manual-year-label">Year:</label>
+                    <input type="number" id="manual-year-input" min="1900" max="2100" placeholder="YYYY">
+                </div>
+                <div class="manual-date-input-group">
+                    <label for="manual-month-select" id="manual-month-label">Month:</label>
+                    <select id="manual-month-select">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+                <div class="manual-date-input-group">
+                    <label for="manual-day-select" id="manual-day-label">Day:</label>
+                    <select id="manual-day-select">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+                <button id="go-to-date-btn" class="primary-btn" aria-label="Go to selected date">Go</button>
+            </div>
+
+            <div id="current-date-display-container">
+                <p id="current-date-display"></p>
+            </div>
+        </header>
+
+        <main id="calendar-container" class="calendar-scroll-container" role="application" aria-roledescription="Calendar application">
+            <!-- Calendar content will be generated by script.js -->
+        </main>
+
+        <!-- Event Modal (অপরিবর্তিত) -->
+        <div id="event-modal" class="modal" aria-modal="true" role="dialog" aria-labelledby="modal-title-elem">
+            <div class="modal-content">
+                <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+                <h2 id="modal-title-elem">Add/Edit Event</h2>
+                <input type="hidden" id="event-id">
+                <input type="hidden" id="event-date">
+                <div>
+                    <label for="event-title" id="event-title-label">Title:</label>
+                    <input type="text" id="event-title" required>
+                </div>
+                <div>
+                    <label for="event-description" id="event-desc-label">Description:</label>
+                    <textarea id="event-description"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button id="save-event-btn" class="primary-btn">Save Event</button>
+                    <button id="delete-event-btn" class="danger-btn" style="display:none;">Delete Event</button>
+                </div>
+                 <div id="events-list-container" style="margin-top: 15px;">
+                    <h3 id="events-on-date-label">Events on this date:</h3>
+                    <ul id="events-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- index.html এর ভেতরের ইনলাইন <script> ট্যাগটি সম্পূর্ণ মুছে ফেলা হয়েছে -->
+</body>
+</html>

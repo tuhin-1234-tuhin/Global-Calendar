@@ -1,0 +1,631 @@
+/* Basic Reset & Global Styles */
+:root {
+    --primary-bg: #ffffff;
+    --primary-text: #333333;
+    --secondary-bg: #f4f4f4;
+    --secondary-text: #555555;
+    --accent-color: #007bff;
+    --accent-text: #ffffff;
+    --border-color: #dddddd;
+    --today-highlight-bg: #007bff;
+    --today-highlight-text: #ffffff;
+    --holiday-bg: #ffc107;
+    --holiday-text: #333;
+    --islamic-holiday-bg: #28a745;
+    --islamic-holiday-text: #ffffff;
+    --event-badge-bg: #dc3545;
+    --modal-bg: #fff;
+    --modal-shadow: rgba(0, 0, 0, 0.1);
+    --header-bg: #f8f9fa;
+
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --border-radius: 8px;
+    --spacing-unit: 8px;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    background-color: var(--primary-bg);
+    color: var(--primary-text);
+    line-height: 1.6;
+    overscroll-behavior-y: contain;
+}
+
+#app-container {
+    max-width: 768px;
+    min-width: 360px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Header */
+.app-header {
+    background-color: var(--header-bg);
+    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2); /* Adjusted padding */
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px var(--modal-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-header h1 {
+    text-align: center;
+    margin: 0 0 calc(var(--spacing-unit) * 1.5) 0; /* Adjusted margin */
+    font-size: 1.8em;
+    color: var(--accent-color);
+}
+
+.controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-unit);
+    gap: var(--spacing-unit);
+}
+
+.main-controls .year-navigation {
+    flex-grow: 0; /* Prevent year nav from taking too much space initially */
+    margin-right: var(--spacing-unit); /* Add some space next to language selector */
+}
+.main-controls .selector-group {
+    flex-grow: 1; /* Allow language selector to take remaining space */
+}
+
+
+.year-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-unit);
+    /* margin-bottom: var(--spacing-unit); REMOVED as it's part of controls-row now */
+}
+#current-year-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+}
+.year-navigation button {
+    padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--primary-bg);
+    color: var(--primary-text);
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.app-header select,
+.app-header input[type="number"],
+.app-header .year-navigation button { /* Include year nav buttons for consistency */
+    padding: var(--spacing-unit); /* Standardized padding */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--primary-bg);
+    color: var(--primary-text);
+    cursor: pointer;
+    font-size: 0.9em; /* Slightly smaller font for controls */
+    box-sizing: border-box;
+}
+
+.app-header select:hover,
+.app-header input[type="number"]:hover,
+.app-header .year-navigation button:hover {
+    background-color: var(--secondary-bg);
+}
+
+
+.selector-group {
+    flex: 1 1 auto;
+    min-width: 120px; /* Adjust as needed */
+}
+.app-header select, .app-header input[type="number"] {
+    width: 100%;
+}
+
+
+.manual-date-entry {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-unit);
+    align-items: flex-end; /* Aligns button with bottom of inputs */
+}
+.manual-date-input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 70px; /* Base width, allow shrink/grow */
+    min-width: 65px; /* Prevent from getting too small */
+}
+.manual-date-input-group label {
+    font-size: 0.8em;
+    margin-bottom: 3px;
+    color: var(--secondary-text);
+    display: block; /* Ensure label is on its own line */
+    text-align: left; /* Align label text to left */
+}
+#manual-year-input {
+   /* width specifically can be controlled by flex-basis */
+}
+
+#go-to-date-btn {
+    padding: var(--spacing-unit);
+    height: fit-content;
+    align-self: flex-end; /* Align with bottom of inputs */
+    margin-left: var(--spacing-unit);
+    flex-shrink: 0; /* Prevent button from shrinking */
+    font-size: 0.9em;
+    line-height: 1.4; /* Ensure text fits well */
+}
+
+
+#current-date-display-container {
+    text-align: center;
+    margin-top: var(--spacing-unit);
+    padding-top: var(--spacing-unit);
+    border-top: 1px solid var(--border-color); /* Separator line */
+    font-weight: bold;
+    color: var(--secondary-text);
+    font-size: 0.9em;
+}
+
+
+/* Calendar Container */
+.calendar-scroll-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: var(--spacing-unit);
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Month View */
+.month-container {
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    background-color: var(--secondary-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-unit);
+    box-shadow: 0 1px 3px var(--modal-shadow);
+}
+
+.month-header {
+    text-align: center;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: var(--spacing-unit);
+    color: var(--accent-color);
+    padding: var(--spacing-unit);
+    background-color: var(--primary-bg);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: calc(var(--spacing-unit) / 2);
+}
+
+.day-name, .day-cell {
+    text-align: center;
+    padding: var(--spacing-unit);
+    font-size: 0.9em;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.day-name {
+    font-weight: bold;
+    color: var(--secondary-text);
+    background-color: var(--primary-bg);
+    border-radius: var(--border-radius);
+}
+
+.day-cell {
+    background-color: var(--primary-bg);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease, box-shadow 0.2s ease;
+}
+.day-cell:hover {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    transform: scale(1.05);
+}
+.day-cell.empty {
+    background-color: transparent;
+    cursor: default;
+    pointer-events: none;
+}
+.day-cell.today {
+    background-color: var(--today-highlight-bg);
+    color: var(--today-highlight-text);
+    font-weight: bold;
+    border: 2px solid var(--accent-color);
+}
+.day-cell.holiday {
+    background-color: var(--holiday-bg);
+    color: var(--holiday-text);
+    font-weight: bold;
+}
+.day-cell.islamic-holiday {
+    background-color: var(--islamic-holiday-bg);
+    color: var(--islamic-holiday-text);
+    font-weight: bold;
+}
+.day-cell .day-number {
+    display: block;
+    font-weight: bold;
+}
+.day-cell .holiday-name {
+    font-size: 0.7em;
+    display: block;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    line-height: 1.1;
+}
+
+.event-badge {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--event-badge-bg);
+    border-radius: 50%;
+    border: 1px solid var(--primary-bg);
+}
+
+.day-cell.date-focused { /* For highlighting manually selected date */
+    outline: 3px solid var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
+    /* transition is already on .day-cell for transform, add for outline/shadow if desired */
+}
+
+
+/* Modal Styling (অপরিবর্তিত) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+}
+.modal.show {
+    display: flex;
+}
+.modal-content {
+    background-color: var(--modal-bg);
+    margin: auto;
+    padding: calc(var(--spacing-unit) * 2.5);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px var(--modal-shadow);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.modal-close-btn {
+    position: absolute;
+    top: var(--spacing-unit);
+    right: var(--spacing-unit);
+    font-size: 1.8em;
+    font-weight: bold;
+    background: none;
+    border: none;
+    color: var(--secondary-text);
+    cursor: pointer;
+}
+.modal-close-btn:hover {
+    color: var(--primary-text);
+}
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--accent-color);
+}
+.modal-content div {
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+.modal-content label {
+    display: block;
+    margin-bottom: calc(var(--spacing-unit) / 2);
+    font-weight: bold;
+}
+.modal-content input[type="text"],
+.modal-content textarea {
+    width: calc(100% - var(--spacing-unit) * 2);
+    padding: var(--spacing-unit);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: var(--font-family);
+    font-size: 1em;
+}
+.modal-content textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-unit);
+}
+.modal-actions button {
+    padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+}
+.primary-btn {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+}
+.primary-btn:hover {
+    opacity: 0.9;
+}
+.danger-btn {
+    background-color: #dc3545;
+    color: #fff;
+}
+.danger-btn:hover {
+    opacity: 0.9;
+}
+#events-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+#events-list li {
+    padding: var(--spacing-unit);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9em;
+}
+#events-list li:last-child {
+    border-bottom: none;
+}
+#events-list .event-item-title {
+    font-weight: bold;
+}
+#events-list .event-item-actions button {
+    margin-left: var(--spacing-unit);
+    font-size: 0.8em;
+    padding: calc(var(--spacing-unit)/2) var(--spacing-unit);
+    background: var(--secondary-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
+}
+
+
+/* Visually Hidden Class for Accessibility */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* --- Themes (অপরিবর্তিত, শুধু Neon থিমের input/select এর জন্য কিছু পরিবর্তন) --- */
+
+/* Dark Theme */
+body.theme-dark {
+    --primary-bg: #1e1e1e;
+    --primary-text: #e0e0e0;
+    --secondary-bg: #2a2a2a;
+    --secondary-text: #b0b0b0;
+    --accent-color: #00aaff;
+    --border-color: #444444;
+    --today-highlight-bg: #00aaff;
+    --holiday-bg: #b38600;
+    --holiday-text: #e0e0e0;
+    --islamic-holiday-bg: #1e7e34;
+    --islamic-holiday-text: #e0e0e0;
+    --event-badge-bg: #c82333;
+    --modal-bg: #2c2c2c;
+    --modal-shadow: rgba(0, 0, 0, 0.3);
+    --header-bg: #252525;
+}
+
+/* Glassmorphic Theme */
+body.theme-glassmorphic {
+    --primary-bg: #f0f0f0;
+    --primary-text: #121212;
+    --secondary-bg: rgba(255, 255, 255, 0.3);
+    --secondary-text: #333;
+    --accent-color: #d65db1;
+    --border-color: rgba(255, 255, 255, 0.5);
+    --today-highlight-bg: #d65db1;
+    --today-highlight-text: #fff;
+    --modal-bg: rgba(255, 255, 255, 0.6);
+    --header-bg: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-image: url('https://source.unsplash.com/random/800x1200?nature,abstract');
+    background-size: cover;
+    background-attachment: fixed;
+}
+.theme-glassmorphic .month-container,
+.theme-glassmorphic .day-cell,
+.theme-glassmorphic .day-name,
+.theme-glassmorphic .app-header,
+.theme-glassmorphic .modal-content {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.theme-glassmorphic .app-header select,
+.theme-glassmorphic .app-header input[type="number"],
+.theme-glassmorphic .year-navigation button,
+.theme-glassmorphic #go-to-date-btn {
+     background-color: rgba(255, 255, 255, 0.4);
+}
+.theme-glassmorphic .day-cell:hover {
+    background-color: rgba(214, 93, 177, 0.5);
+}
+
+
+/* Gradient Neon Theme */
+body.theme-neon {
+    --primary-bg: #0f0c29;
+    --primary-text: #e0e0e0;
+    --secondary-bg: #24243e;
+    --secondary-text: #a0a0c0;
+    --accent-color: #ff00ff;
+    --accent-text: #000; /* Text on magenta accent */
+    --border-color: #ff00ff;
+    --today-highlight-bg: #00ffff;
+    --today-highlight-text: #000; /* Text on cyan accent */
+    --holiday-bg: #ffff00;
+    --holiday-text: #000; /* Text on yellow accent */
+    --islamic-holiday-bg: #00ff00;
+    --islamic-holiday-text: #000; /* Text on green accent */
+    --event-badge-bg: #ff0000;
+    --modal-bg: #1a1a2e;
+    --modal-shadow: rgba(255, 0, 255, 0.3);
+    --header-bg: #1c1c33;
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+}
+.theme-neon .app-header h1 {
+    color: #00ffff;
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+}
+.theme-neon .month-header {
+    color: var(--accent-color);
+    text-shadow: 0 0 3px var(--accent-color);
+}
+.theme-neon .day-cell, .theme-neon .day-name {
+    border: 1px solid rgba(255,0,255,0.3);
+    box-shadow: 0 0 5px rgba(255,0,255,0.2) inset;
+}
+.theme-neon .day-cell:hover {
+    box-shadow: 0 0 10px var(--accent-color), 0 0 5px var(--accent-color) inset;
+    color: var(--primary-text);
+}
+.theme-neon .day-cell.today {
+    box-shadow: 0 0 10px var(--today-highlight-bg), 0 0 5px var(--today-highlight-bg) inset;
+}
+.theme-neon .app-header select,
+.theme-neon .app-header input[type="number"],
+.theme-neon .year-navigation button,
+.theme-neon #go-to-date-btn { /* Apply to new button as well */
+    background-color: var(--secondary-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 0 5px var(--accent-color);
+}
+.theme-neon .modal-content {
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+.theme-neon .manual-date-input-group label {
+    color: var(--accent-color); /* Make labels neon too */
+    text-shadow: 0 0 2px var(--accent-color);
+}
+
+
+/* RTL support (অপরিবর্তিত) */
+body[dir="rtl"] .app-header h1 {}
+body[dir="rtl"] .modal-actions {
+    justify-content: flex-start;
+}
+body[dir="rtl"] #events-list {
+    padding-right: 0;
+}
+body[dir="rtl"] .event-badge {
+    right: auto;
+    left: 4px;
+}
+body[dir="rtl"] .manual-date-input-group label {
+    text-align: right;
+}
+body[dir="rtl"] #go-to-date-btn {
+    margin-left: 0;
+    margin-right: var(--spacing-unit);
+}
+body[dir="rtl"] .main-controls .year-navigation {
+    margin-right: 0;
+    margin-left: var(--spacing-unit);
+}
+
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 520px) { /* Adjusted breakpoint */
+    .controls-row {
+        /* flex-direction: column; /* Uncomment if stacking is preferred on very small screens */
+        /* align-items: stretch;   /* Uncomment if stacking is preferred */
+    }
+    .main-controls { /* Stack year nav and language selector */
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .main-controls .year-navigation {
+        margin-right: 0;
+        margin-bottom: var(--spacing-unit);
+        width: 100%; /* Make year nav take full width */
+        justify-content: space-around; /* Distribute year nav items */
+    }
+     .main-controls .selector-group {
+        width: 100%;
+    }
+
+    .secondary-controls .selector-group {
+        min-width: calc(50% - var(--spacing-unit) / 2); /* Two selectors per row */
+    }
+
+    .manual-date-entry {
+        /* Keep manual date inputs in a row if possible, but allow wrapping */
+    }
+    .manual-date-input-group {
+         min-width: 60px; /* Further reduce min-width */
+         flex-basis: 60px;
+    }
+    #go-to-date-btn {
+        flex-grow: 1; /* Allow button to take more space if inputs wrap */
+        margin-top: var(--spacing-unit); /* Add margin if it wraps to new line */
+    }
+}
+@media (max-width: 380px) {
+    .secondary-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .secondary-controls .selector-group {
+        width: 100%;
+        min-width: 100%;
+    }
+    .manual-date-entry {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .manual-date-input-group {
+        width: 100%;
+        margin-bottom: var(--spacing-unit);
+    }
+    #go-to-date-btn {
+        width: 100%;
+        margin-left: 0;
+    }
+}
